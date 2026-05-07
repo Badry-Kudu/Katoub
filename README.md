@@ -1,6 +1,6 @@
-# Katvan
+# Katoub
 
-A bare-bones graphical editor for [Typst](https://github.com/typst/typst) files, with a strong bias for Right-to-Left editing.
+A bare-bones graphical editor for [Typst](https://github.com/typst/typst) files, with a strong bias for Right-to-Left editing. based on Katvan. 
 
 ## Screenshots
 
