@@ -15,7 +15,7 @@ Companion documents:
 
 Katoub is a Qt-based graphical editor for Typst documents, with a strong bias for right-to-left (RTL) editing. The compiler itself (Typst) is **embedded** inside the application as a Rust library; the editor talks to it through a C++ shim that runs the engine on its own thread.
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  typstdriver_rs (Rust crate, staticlib)                                 │
 │    – wraps upstream typst / typst-pdf / typst-render / typst-ide / kit  │

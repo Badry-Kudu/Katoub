@@ -55,7 +55,7 @@ The unit-test runner (`tests/main.cpp`) forces `QT_QPA_PLATFORM=minimal` and cre
 
 There are **four** CMake targets that compose the app, plus a Rust crate:
 
-```
+```text
 typstdriver_rs (Rust)  ──cxx bridge──▶  typstdriver (C++ SHARED lib)
                                           │
                                           ▼

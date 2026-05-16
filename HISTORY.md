@@ -163,7 +163,7 @@ endif()
 
 On **2026-05-07**, commit `85962cb` by **Badry Darkoush** (`hi@badry.email`) created the Katoub fork:
 
-```
+```text
 commit 85962cb
 Author: Badry Darkoush <hi@badry.email>
 Date:   Thu May 7 22:57:46 2026 +0300
@@ -198,7 +198,7 @@ The fork inherits a few decisions that strongly shape what the codebase looks li
 
 ## 5. Timeline summary
 
-```
+```text
 2024-01-22  v0.1.0   Katvan initial release (Qt shell + external Typst CLI)
 2024-02-10  v0.2.0   Syntax highlighting (parser+tokenizer introduced)
 2024-02-24  v0.3.0   Spell checking (Hunspell)
