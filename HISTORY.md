@@ -49,7 +49,7 @@ The most architecturally significant release in the project's history. From the 
 
 > Starting from this release, Katvan directly embeds the Typst compiler. This means that separately installing the Typst CLI is not required anymore […]
 
-This is when the **`typstdriver/`** subproject was born: a Rust crate (`typstdriver_rs`) wrapping the upstream `typst`, `typst-pdf`, `typst-render`, `typst-ide`, and `typst-kit` crates, exposed to the C++ side through a `cxx::bridge` in `rust/src/bridge.rs`. Corrosion is used to integrate Cargo with CMake. All of the architectural complexity around the `core/katvan_typstdriverwrapper.{h,cpp}` shim (which runs the engine on its own `QThread`) traces to this moment.
+This is when the **`typstdriver/`** subproject was born: a Rust crate (`typstdriver_rs`) wrapping the upstream `typst`, `typst-pdf`, `typst-render`, `typst-ide`, and `typst-kit` crates, exposed to the C++ side through a `cxx::bridge` in `typstdriver/rust/src/bridge.rs`. Corrosion is used to integrate Cargo with CMake. All of the architectural complexity around the `core/katvan_typstdriverwrapper.{h,cpp}` shim (which runs the engine on its own `QThread`) traces to this moment.
 
 Other v0.7.0 highlights:
 

@@ -21,7 +21,7 @@ Katoub is a Qt-based graphical editor for Typst documents, with a strong bias fo
 │    – wraps upstream typst / typst-pdf / typst-render / typst-ide / kit  │
 │    – rust/src/{engine,export,world,pathmap,symbols,analysis}.rs         │
 │                          │                                              │
-│                cxx::bridge in rust/src/bridge.rs                        │
+│            cxx::bridge in typstdriver/rust/src/bridge.rs                │
 │                          │                                              │
 │  typstdriver (C++ SHARED library, hidden visibility, framework on mac)  │
 │    – typstdriver_engine.{h,cpp}        QObject wrapping the Rust engine │
@@ -94,7 +94,7 @@ cmake --build build -j --config RelWithDebInfo
 ctest --output-on-failure --test-dir build
 
 # Single GoogleTest (tests are discovered with gtest_discover_tests)
-./build/tests/katvan_tests --gtest_filter='ParsingTest.HandlesEscapes'
+./build/tests/katvan_tests --gtest_filter='TokenizerTests.Escapes'
 
 # List discoverable tests
 ./build/tests/katvan_tests --gtest_list_tests
@@ -116,7 +116,7 @@ cargo fmt --manifest-path typstdriver/rust/Cargo.toml
 CI (`.github/workflows/build.yml`) also runs:
 
 - A `clazy` pass: `cmake -S . -B build -DCMAKE_CXX_COMPILER=clazy`.
-- The `typos` spell-check across the tree (configured by `typos.toml`; suppress on a single line with `// spellchecker:disable-line` or `# spellchecker:disable-line`).
+- The `typos` spell-check across the tree (configured by `typos.toml`; suppress on a single line with `// spellchecker:disable-line` or `# spellchecker:disable-line`). Note: CI currently invokes `typos || true`, so findings are reported but do not gate the build.
 
 ### CMake options that matter for packaging
 
@@ -217,7 +217,7 @@ These are non-obvious load-bearing invariants. Violating any of them creates ver
 
 1. **All editor↔Typst communication goes through `katvan_typstdriverwrapper`.** It moves the engine to its own `QThread`, batches pending edits, and re-emits Typst events back to the UI thread. Don't construct a `typstdriver::Engine` from anywhere else, don't post directly to the engine's slots, don't read its state synchronously.
 2. **The parser is single-pass and listener-driven.** When you need to know "what kind of Typst construct is at position X," **add a `ParsingListener` subclass** rather than re-parsing or grepping the buffer. Existing listeners (`HighlightingListener`, `ContentWordsListener`, `IsolatesListener`, `StateSpansListener`) are good models. Multiple listeners are attached to the same parse; the cost of adding one more is small, the cost of a second parse is real.
-3. **Any FFI change requires editing both sides of `cxx::bridge`.** `rust/src/bridge.rs` is the source of truth; `corrosion_add_cxxbridge` generates the matching C++ header at build time. New types/functions added on one side must appear on the other. If a Rust function returns errors, declare it `Result<…>` in the bridge.
+3. **Any FFI change requires editing both sides of `cxx::bridge`.** `typstdriver/rust/src/bridge.rs` is the source of truth; `corrosion_add_cxxbridge` generates the matching C++ header at build time. New types/functions added on one side must appear on the other. If a Rust function returns errors, declare it `Result<…>` in the bridge.
 4. **Windows must build `RelWithDebInfo`, not `Debug`.** Rust's MSVC `std` always links the release CRT; a Debug C++ link breaks. The root `CMakeLists.txt` removes `Debug` from `CMAKE_CONFIGURATION_TYPES` for MSVC. If you find yourself trying to enable Debug on Windows, you're going down the wrong rabbit hole — see [rust-lang/rust#39016](https://github.com/rust-lang/rust/issues/39016).
 5. **Qt compile-time guards in `katvan_core` and `typstdriver`.** Both define `QT_RESTRICTED_CAST_FROM_ASCII` and `QT_NO_EMIT`. Prefer `QStringLiteral` / `u"..."_s`; never write `emit signalName(...)`, just call it as a function. Adding `QT_NO_KEYWORDS` is fine; removing these guards is not.
 6. **`-fobjc-arc` on the macshell.** Memory management in `macshell/*.mm` is automatic. Don't introduce manual `retain`/`release`/`autorelease`.
