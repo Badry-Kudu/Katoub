@@ -88,6 +88,7 @@ public slots:
     void requestPageWordCount(int page);
     void requestAllSymbolsJson();
     void applySettings(const katvan::typstdriver::TypstCompilerSettings& settings);
+    void setDefaultTextLang(const QString& lang);
     void discardLookupCaches();
 
 private:

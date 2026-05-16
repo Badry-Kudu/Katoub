@@ -58,6 +58,7 @@ public:
     bool isGoForwardAvailable() const { return !d_forwardLandmarks.isEmpty(); }
 
     void applySettings(const EditorSettings& settings);
+    const EditorSettings& effectiveSettings() const { return d_effectiveSettings; }
     void updateEditorTheme();
     void setSourceDiagnostics(QList<typstdriver::Diagnostic> diagnostics);
 
@@ -148,6 +149,7 @@ signals:
     void goToDefinitionRequested(int blockNumber, int charOffset);
     void showSymbolPicker();
     void showColorPicker();
+    void effectiveSettingsChanged();
 
 private:
     QWidget* d_leftLineNumberGutter;

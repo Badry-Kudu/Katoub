@@ -272,6 +272,21 @@ TEST(EditorSettingsTests, AutoBackupInterval) {
     EXPECT_THAT(s2.hasAutoBackupInterval(), ::testing::IsFalse());
 }
 
+TEST(EditorSettingsTests, Language) {
+    EditorSettings s1 { "katvan: lang ar;" };
+    EXPECT_THAT(s1.hasLanguage(), ::testing::IsTrue());
+    EXPECT_THAT(s1.language(), ::testing::Eq(QStringLiteral("ar")));
+    EXPECT_THAT(s1.toModeLine(), ::testing::Eq(QStringLiteral("lang ar;")));
+
+    EditorSettings s2 { "katvan: lang he;" };
+    EXPECT_THAT(s2.hasLanguage(), ::testing::IsTrue());
+    EXPECT_THAT(s2.language(), ::testing::Eq(QStringLiteral("he")));
+
+    EditorSettings s3 { "katvan: font Arial;" };
+    EXPECT_THAT(s3.hasLanguage(), ::testing::IsFalse());
+    EXPECT_THAT(s3.language(), ::testing::Eq(QString()));
+}
+
 TEST(EditorSettingsTests, Mixed) {
     EditorSettings s { "katvan: font Arial Special; no-such-flag; replace-tabs on; replace-tabs off; tab-width     5; font-size 10; indent-mode normal;" };
     EXPECT_THAT(s.hasFontFamily(), ::testing::IsTrue());

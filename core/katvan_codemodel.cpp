@@ -30,6 +30,15 @@ using State = parsing::ParserState::Kind;
 
 static unsigned long g_spanIdCounter = 0;
 
+static inline bool isRtlLetterScript(QChar::Script script)
+{
+    return script == QChar::Script_Hebrew
+        || script == QChar::Script_Arabic
+        || script == QChar::Script_Syriac
+        || script == QChar::Script_Thaana
+        || script == QChar::Script_Nko;
+}
+
 bool operator<(const StateSpan& lhs, const StateSpan& rhs)
 {
     if (lhs.startPos != rhs.startPos) {
@@ -465,7 +474,7 @@ std::optional<QChar> CodeModel::getMatchingCloseBracket(QTextCursor cursor, QCha
         if (isInCode || isInMath
             || ((isInContent || isInRaw) &&
                 prevChar != QLatin1Char('\\') &&
-                (prevChar.script() != QChar::Script_Hebrew || cursor.hasSelection()))) {
+                (!isRtlLetterScript(prevChar.script()) || cursor.hasSelection()))) {
             return QLatin1Char('"');
         }
     }

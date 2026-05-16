@@ -82,6 +82,8 @@ public:
 
     int autoBackupInterval() const;
 
+    QString language() const;
+
     void setFontFamily(const QString& fontFamily) { d_fontFamily = fontFamily; }
     void setFontSize(int fontSize) { d_fontSize = fontSize; }
     void setIndentMode(IndentMode indentMode) { d_indentMode = indentMode; }
@@ -94,6 +96,7 @@ public:
     void setAutoBrackets(bool enable) { d_autoBrackets = enable; }
     void setAutoTriggerCompletions(bool enable) { d_autoTriggerCompletions = enable; }
     void setAutoBackupInterval(int interval) { d_autoBackupInterval = interval; }
+    void setLanguage(const QString& lang) { d_language = lang; }
 
     bool hasFontFamily() const { return d_fontFamily.has_value(); }
     bool hasFontSize() const { return d_fontSize.has_value(); }
@@ -107,6 +110,7 @@ public:
     bool hasAutoBrackets() const { return d_autoBrackets.has_value(); }
     bool hasAutoTriggerCompletions() const { return d_autoTriggerCompletions.has_value(); }
     bool hasAutoBackupInterval() const { return d_autoBackupInterval.has_value(); }
+    bool hasLanguage() const { return d_language.has_value(); }
 
     void mergeSettings(const EditorSettings& other);
 
@@ -125,6 +129,7 @@ private:
     std::optional<bool> d_autoBrackets;
     std::optional<bool> d_autoTriggerCompletions;
     std::optional<int> d_autoBackupInterval;
+    std::optional<QString> d_language;
 };
 
 }

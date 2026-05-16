@@ -1,6 +1,6 @@
 # Katoub
 
-A bare-bones graphical editor for [Typst](https://github.com/typst/typst) files, with a strong bias for Right-to-Left editing. based on Katvan. 
+A bare-bones graphical editor for [Typst](https://github.com/typst/typst) files, with a strong bias for Right-to-Left editing. Based on Katvan, with Arabic as a first-class language alongside Hebrew. The user interface can be displayed in English, Hebrew, or Arabic (selected from the Editor settings or auto-detected from the system locale; the `--lang=<code>` command-line option also works).
 
 ## Screenshots
 

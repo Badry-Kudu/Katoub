@@ -1,3 +1,22 @@
+## Unreleased
+
+### Arabic Support (Katoub Fork)
+
+Katoub adds Arabic (`ar`) as a first-class language alongside Hebrew, with the same RTL editing priorities.
+
+#### New Features
+
+- The user interface can now be displayed in Arabic. The active UI language can be picked from a new control in the Editor settings tab (Auto-detect / English / Hebrew / Arabic); auto-detect remains the default and honors the system locale. The chosen language is persisted in user settings and takes effect after restart.
+- A generic `--lang=<code>` command-line option now selects the UI language (e.g. `--lang=ar`). The previous `--heb` flag is kept as a hidden deprecated alias.
+- The Insert menu has new entries for Kashida / Tatweel (U+0640) and Arabic punctuation (، ؛ ؟).
+- A new per-document modeline directive `lang <code>` (e.g. `// katvan: lang ar;`) sets Typst's default `text.lang` for the compiled document, affecting hyphenation, dates, and numbering. When no modeline is present, the UI-language setting is used as a fallback for Hebrew or Arabic.
+- Auto-bracket suppression after RTL letters (introduced for Hebrew) now also applies after Arabic, Syriac, Thaana, and N'Ko letters.
+
+#### Notes
+
+- Spell-check for Arabic on Linux relies on a system-installed Hunspell dictionary (e.g. the distro `hunspell-ar` package). On Windows and macOS the native OS spell-checker is used (`ISpellChecker` / `NSSpellChecker`), which supports Arabic if the corresponding Language Pack is installed.
+- The Arabic UI translation files (`core_ar.ts`, `shell_ar.ts`, `ar.lproj/Localizable.strings`) are currently empty skeletons populated by the build; translation content contributions are welcome.
+
 ## v0.12.0 (2025-12-10)
 
 Katvan is just shy of two years old! At this point, pretty much all features that I envisoned are now implemented. From now on, we start the final road to 1.0, where the focus is going to be on strengthening existing features, catching up on gaps in the macOS version, and building up project infrastructure with the goal of making Katvan open to contribution and sustainable long term. Thank you to all who shared the journey with me so far!
