@@ -1067,6 +1067,11 @@ void MainWindow::settingsDialogAccepted()
     EditorSettings editorSettings = d_settingsDialog->editorSettings();
     typstdriver::TypstCompilerSettings compilerSettings = d_settingsDialog->compilerSettings();
 
+    QSettings settings;
+    settings.setValue(SETTING_EDITOR_MODE, editorSettings.toModeLine());
+    settings.setValue(SETTING_UI_LANGUAGE, d_settingsDialog->uiLanguage());
+    compilerSettings.save(settings);
+
     d_editor->applySettings(editorSettings);
     d_backupHandler->setBackupInterval(editorSettings.autoBackupInterval());
 
@@ -1074,12 +1079,10 @@ void MainWindow::settingsDialogAccepted()
     if (!compilerSettings.allowPreviewPackages()) {
         d_driver->discardLookupCaches();
     }
-    d_driver->updatePreview();
 
-    QSettings settings;
-    settings.setValue(SETTING_EDITOR_MODE, editorSettings.toModeLine());
-    settings.setValue(SETTING_UI_LANGUAGE, d_settingsDialog->uiLanguage());
-    compilerSettings.save(settings);
+    editorEffectiveSettingsChanged();
+
+    d_driver->updatePreview();
 }
 
 void MainWindow::showSymbolPicker()

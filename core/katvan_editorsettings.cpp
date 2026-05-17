@@ -133,7 +133,9 @@ void EditorSettings::parseModeLine(QString mode, EditorSettings::ModeSource sour
             }
         }
         else if (variable == QStringLiteral("lang")) {
-            d_language = rest;
+            if (!rest.isEmpty()) {
+                d_language = rest;
+            }
         }
     }
 }
