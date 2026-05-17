@@ -70,6 +70,16 @@ void SettingsDialog::setCompilerSettings(const typstdriver::TypstCompilerSetting
     d_compilerSettingsTab->setSettings(settings);
 }
 
+QString SettingsDialog::uiLanguage() const
+{
+    return d_editorSettingsTab->uiLanguage();
+}
+
+void SettingsDialog::setUiLanguage(const QString& languageCode)
+{
+    d_editorSettingsTab->setUiLanguage(languageCode);
+}
+
 void SettingsDialog::setupUI()
 {
     setWindowTitle(tr("Katvan Settings"));
@@ -157,8 +167,37 @@ void EditorSettingsTab::setSettings(const EditorSettings& settings)
     updateControlStates();
 }
 
+QString EditorSettingsTab::uiLanguage() const
+{
+    return d_uiLanguage->currentData().toString();
+}
+
+void EditorSettingsTab::setUiLanguage(const QString& languageCode)
+{
+    int idx = d_uiLanguage->findData(languageCode);
+    if (idx < 0) {
+        idx = 0;
+    }
+    d_uiLanguage->setCurrentIndex(idx);
+}
+
 void EditorSettingsTab::setupUI()
 {
+    d_uiLanguage = new QComboBox();
+    d_uiLanguage->addItem(tr("Auto-detect (system locale)"), QString());
+    d_uiLanguage->addItem(QStringLiteral("English"), QStringLiteral("en"));
+    d_uiLanguage->addItem(QStringLiteral("עברית"), QStringLiteral("he"));
+    d_uiLanguage->addItem(QStringLiteral("العربية"), QStringLiteral("ar"));
+
+    QLabel* uiLanguageLabel = new QLabel(tr("&User Interface Language:"));
+    uiLanguageLabel->setBuddy(d_uiLanguage);
+
+    QLabel* uiLanguageNote = new QLabel(tr("Changes to the user interface language take effect after restarting Katvan."));
+    uiLanguageNote->setWordWrap(true);
+    QFont noteFont = uiLanguageNote->font();
+    noteFont.setItalic(true);
+    uiLanguageNote->setFont(noteFont);
+
     d_editorFontComboBox = new QFontComboBox();
     connect(d_editorFontComboBox, &QFontComboBox::currentFontChanged, this, &EditorSettingsTab::updateFontSizes);
 
@@ -220,6 +259,13 @@ void EditorSettingsTab::setupUI()
     editorFontLayout->addWidget(d_editorFontComboBox, 1);
     editorFontLayout->addWidget(d_editorFontSizeComboBox);
 
+    QGroupBox* languageGroup = new QGroupBox(tr("Language"));
+    QVBoxLayout* languageLayout = new QVBoxLayout(languageGroup);
+    QFormLayout* languageFormLayout = new QFormLayout();
+    languageFormLayout->addRow(uiLanguageLabel, d_uiLanguage);
+    languageLayout->addLayout(languageFormLayout);
+    languageLayout->addWidget(uiLanguageNote);
+
     QGroupBox* appearanceGroup = new QGroupBox(tr("Appearance"));
     QFormLayout* appearanceLayout = new QFormLayout(appearanceGroup);
     appearanceLayout->addRow(editorFontLabel, editorFontLayout);
@@ -260,6 +306,7 @@ void EditorSettingsTab::setupUI()
     autoBackupLayout->addRow(tr("&Backup Interval:"), d_backupInterval);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(languageGroup);
     mainLayout->addWidget(appearanceGroup);
     mainLayout->addWidget(indentationGroup);
     mainLayout->addWidget(behaviourGroup);

@@ -322,6 +322,10 @@ impl<'a> EngineImpl<'a> {
         self.world.set_compiler_flags(a11y_extras);
     }
 
+    pub fn set_default_text_lang(&mut self, lang: &str) {
+        self.world.set_default_text_lang(lang);
+    }
+
     pub fn set_allowed_paths(&mut self, paths: Vec<String>) {
         self.world.set_allowed_paths(paths);
     }

@@ -132,6 +132,11 @@ void EditorSettings::parseModeLine(QString mode, EditorSettings::ModeSource sour
                 d_autoBackupInterval = interval;
             }
         }
+        else if (variable == QStringLiteral("lang")) {
+            if (!rest.isEmpty()) {
+                d_language = rest;
+            }
+        }
     }
 }
 
@@ -215,6 +220,9 @@ QString EditorSettings::toModeLine() const
     if (d_autoBackupInterval) {
         result += QLatin1String("backup-interval %1; ").arg(QString::number(d_autoBackupInterval.value()));
     }
+    if (d_language) {
+        result += QLatin1String("lang %1; ").arg(d_language.value());
+    }
 
     return result.trimmed();
 }
@@ -290,6 +298,11 @@ int EditorSettings::autoBackupInterval() const
     return d_autoBackupInterval.value_or(15);
 }
 
+QString EditorSettings::language() const
+{
+    return d_language.value_or(QString());
+}
+
 void EditorSettings::mergeSettings(const EditorSettings& other)
 {
     if (other.d_fontFamily) {
@@ -324,6 +337,9 @@ void EditorSettings::mergeSettings(const EditorSettings& other)
     }
     if (other.d_autoTriggerCompletions) {
         d_autoTriggerCompletions = other.d_autoTriggerCompletions;
+    }
+    if (other.d_language) {
+        d_language = other.d_language;
     }
 }
 

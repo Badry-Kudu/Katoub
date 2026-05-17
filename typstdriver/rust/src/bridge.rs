@@ -200,6 +200,8 @@ pub(crate) mod ffi {
 
         fn set_compiler_flags(&mut self, a11y_extras: bool);
 
+        fn set_default_text_lang(&mut self, lang: &str);
+
         fn set_allowed_paths(&mut self, paths: Vec<String>);
 
         fn discard_lookup_caches(&mut self);

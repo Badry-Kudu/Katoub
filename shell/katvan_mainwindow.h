@@ -85,6 +85,7 @@ private slots:
     void currentFileChangedOnDisk();
     void cursorPositionChanged();
     void editorFontZoomFactorChanged(qreal factor);
+    void editorEffectiveSettingsChanged();
     void changeSpellCheckingDictionary();
     void toggleCursorMovementStyle();
     void showSettingsDialog();

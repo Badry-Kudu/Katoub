@@ -34,6 +34,11 @@ static constexpr QChar RLI_MARK = (ushort)0x2067;
 static constexpr QChar FSI_MARK = (ushort)0x2068;
 static constexpr QChar PDI_MARK = (ushort)0x2069;
 
+static constexpr QChar KASHIDA = (ushort)0x0640;
+static constexpr QChar ARABIC_COMMA = (ushort)0x060c;
+static constexpr QChar ARABIC_SEMICOLON = (ushort)0x061b;
+static constexpr QChar ARABIC_QUESTION = (ushort)0x061f;
+
 bool isBidiControlChar(QChar ch);
 bool isSingleBidiMark(QChar ch);
 bool isWhitespace(QChar ch);

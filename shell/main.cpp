@@ -89,6 +89,10 @@ int main(int argc, char** argv)
 #endif
     QCoreApplication::setApplicationVersion(version);
 
+    QCommandLineOption langOption{ "lang", "Force UI language (e.g. he, ar, en)", "code" };
+    QCommandLineOption hebOption{ "heb", "Deprecated; use --lang=he" };
+    hebOption.setFlags(QCommandLineOption::HiddenFromHelp);
+
     QCommandLineParser parser;
     parser.addPositionalArgument("file", "File to open");
     parser.addOptions({
@@ -96,7 +100,8 @@ int main(int argc, char** argv)
         QCommandLineOption{ "portable", "Use portable mode" },
         QCommandLineOption{ "no-portable", "Don't use portable mode, even if this is a portable build" },
 #endif
-        QCommandLineOption{ "heb", "Force Hebrew UI" }
+        langOption,
+        hebOption
     });
     parser.addVersionOption();
     parser.addHelpOption();
@@ -114,8 +119,19 @@ int main(int argc, char** argv)
     }
 
     QLocale locale = QLocale::system();
-    if (parser.isSet("heb")) {
+    if (parser.isSet(langOption)) {
+        locale = QLocale(parser.value(langOption));
+    }
+    else if (parser.isSet(hebOption)) {
+        qWarning("--heb is deprecated, use --lang=he instead");
         locale = QLocale(QLocale::Hebrew);
+    }
+    else {
+        QSettings settings;
+        QString uiLang = settings.value(QLatin1StringView("ui/language")).toString();
+        if (!uiLang.isEmpty()) {
+            locale = QLocale(uiLang);
+        }
     }
 
     loadTranslations(locale);

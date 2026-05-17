@@ -68,6 +68,7 @@ static constexpr QLatin1StringView SETTING_MAIN_WINDOW_STATE = QLatin1StringView
 static constexpr QLatin1StringView SETTING_MAIN_WINDOW_GEOMETRY = QLatin1StringView("MainWindow/geometry");
 static constexpr QLatin1StringView SETTING_SPELLING_DICT = QLatin1StringView("spelling/dict");
 static constexpr QLatin1StringView SETTING_EDITOR_MODE = QLatin1StringView("editor/mode");
+static constexpr QLatin1StringView SETTING_UI_LANGUAGE = QLatin1StringView("ui/language");
 
 MainWindow::MainWindow()
     : QMainWindow(nullptr)
@@ -129,6 +130,7 @@ void MainWindow::setupUI()
     connect(d_editor->completionManager(), &CompletionManager::completionsRequested, d_driver, &TypstDriverWrapper::requestCompletions);
     connect(d_editor, &QTextEdit::cursorPositionChanged, this, &MainWindow::cursorPositionChanged);
     connect(d_editor, &Editor::fontZoomFactorChanged, this, &MainWindow::editorFontZoomFactorChanged);
+    connect(d_editor, &Editor::effectiveSettingsChanged, this, &MainWindow::editorEffectiveSettingsChanged);
     connect(d_editor, &Editor::showSymbolPicker, this, &MainWindow::showSymbolPicker);
     connect(d_editor, &Editor::showColorPicker, this, &MainWindow::showColorPicker);
 
@@ -1015,6 +1017,19 @@ void MainWindow::editorFontZoomFactorChanged(qreal factor)
     }
 }
 
+void MainWindow::editorEffectiveSettingsChanged()
+{
+    QString effectiveLang = d_editor->effectiveSettings().language();
+    if (effectiveLang.isEmpty()) {
+        QSettings settings;
+        QString uiLang = settings.value(SETTING_UI_LANGUAGE).toString();
+        if (uiLang == QStringLiteral("he") || uiLang == QStringLiteral("ar")) {
+            effectiveLang = uiLang;
+        }
+    }
+    d_driver->setDocumentLanguage(effectiveLang);
+}
+
 void MainWindow::toggleCursorMovementStyle()
 {
     if (d_editor->document()->defaultCursorMoveStyle() == Qt::LogicalMoveStyle) {
@@ -1043,6 +1058,7 @@ void MainWindow::showSettingsDialog()
 
     d_settingsDialog->setEditorSettings(editorSettings);
     d_settingsDialog->setCompilerSettings(compilerSettings);
+    d_settingsDialog->setUiLanguage(settings.value(SETTING_UI_LANGUAGE).toString());
     d_settingsDialog->open();
 }
 
@@ -1051,6 +1067,11 @@ void MainWindow::settingsDialogAccepted()
     EditorSettings editorSettings = d_settingsDialog->editorSettings();
     typstdriver::TypstCompilerSettings compilerSettings = d_settingsDialog->compilerSettings();
 
+    QSettings settings;
+    settings.setValue(SETTING_EDITOR_MODE, editorSettings.toModeLine());
+    settings.setValue(SETTING_UI_LANGUAGE, d_settingsDialog->uiLanguage());
+    compilerSettings.save(settings);
+
     d_editor->applySettings(editorSettings);
     d_backupHandler->setBackupInterval(editorSettings.autoBackupInterval());
 
@@ -1058,11 +1079,10 @@ void MainWindow::settingsDialogAccepted()
     if (!compilerSettings.allowPreviewPackages()) {
         d_driver->discardLookupCaches();
     }
-    d_driver->updatePreview();
 
-    QSettings settings;
-    settings.setValue(SETTING_EDITOR_MODE, editorSettings.toModeLine());
-    compilerSettings.save(settings);
+    editorEffectiveSettingsChanged();
+
+    d_driver->updatePreview();
 }
 
 void MainWindow::showSymbolPicker()

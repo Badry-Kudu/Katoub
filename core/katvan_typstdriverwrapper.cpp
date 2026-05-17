@@ -79,6 +79,15 @@ void TypstDriverWrapper::setCompilerSettings(const typstdriver::TypstCompilerSet
     }
 }
 
+void TypstDriverWrapper::setDocumentLanguage(const QString& lang)
+{
+    d_documentLanguage = lang;
+
+    if (d_status != Status::INITIALIZING) {
+        QMetaObject::invokeMethod(d_engine, &typstdriver::Engine::setDefaultTextLang, lang);
+    }
+}
+
 void TypstDriverWrapper::resetInputFile(const QString& sourceFileName)
 {
     d_status = Status::INITIALIZING;
@@ -98,6 +107,7 @@ void TypstDriverWrapper::resetInputFile(const QString& sourceFileName)
         Q_EMIT compilationStatusChanged();
 
         QMetaObject::invokeMethod(d_engine, &typstdriver::Engine::applySettings, *d_settings);
+        QMetaObject::invokeMethod(d_engine, &typstdriver::Engine::setDefaultTextLang, d_documentLanguage);
 
         bool hasPending = false;
         if (d_pendingSource) {

@@ -64,6 +64,7 @@ public:
     DiagnosticsModel* diagnosticsModel() { return d_diagnosticsModel; }
 
     void setCompilerSettings(const typstdriver::TypstCompilerSettings& settings);
+    void setDocumentLanguage(const QString& lang);
     void resetInputFile(const QString& sourceFileName);
 
 signals:
@@ -121,6 +122,7 @@ private:
 
     Status d_status;
     std::shared_ptr<typstdriver::TypstCompilerSettings> d_settings;
+    QString d_documentLanguage;
     std::optional<QString> d_pendingSource;
     QList<PendingEdit> d_pendingEdits;
     quint64 d_lastMetadataFingerprint;

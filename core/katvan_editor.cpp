@@ -213,6 +213,8 @@ void Editor::applyEffectiveSettings()
     document()->setLayoutEnabled(true);
 
     d_completionManager->setImplicitCompletionAllowed(d_effectiveSettings.autoTriggerCompletions());
+
+    Q_EMIT effectiveSettingsChanged();
 }
 
 static EditorTheme& themeForColorScheme(const QString& scheme)
@@ -260,6 +262,16 @@ QMenu* Editor::createInsertMenu()
     menu->addAction(utils::fontIcon(utils::LRM_MARK, ccFont), tr("Left-to-Right Mark"), this, [this]() { insertMark(utils::LRM_MARK); });
     menu->addAction(utils::fontIcon(utils::RLM_MARK, ccFont), tr("Right-to-Left Mark"), this, [this]() { insertMark(utils::RLM_MARK); });
     menu->addAction(utils::fontIcon(utils::ALM_MARK, ccFont), tr("Arabic Letter Mark"), this, [this]() { insertMark(utils::ALM_MARK); });
+
+    menu->addSeparator();
+
+    menu->addAction(utils::fontIcon(utils::KASHIDA), tr("Kashida (Tatweel)"), this, [this]() { insertMark(utils::KASHIDA); });
+
+    menu->addSeparator();
+
+    menu->addAction(utils::fontIcon(utils::ARABIC_COMMA), tr("Arabic Comma"), this, [this]() { insertMark(utils::ARABIC_COMMA); });
+    menu->addAction(utils::fontIcon(utils::ARABIC_SEMICOLON), tr("Arabic Semicolon"), this, [this]() { insertMark(utils::ARABIC_SEMICOLON); });
+    menu->addAction(utils::fontIcon(utils::ARABIC_QUESTION), tr("Arabic Question Mark"), this, [this]() { insertMark(utils::ARABIC_QUESTION); });
 
     menu->addSeparator();
 

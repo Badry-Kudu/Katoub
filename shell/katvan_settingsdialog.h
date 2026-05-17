@@ -53,6 +53,9 @@ public:
     typstdriver::TypstCompilerSettings compilerSettings() const;
     void setCompilerSettings(const typstdriver::TypstCompilerSettings& settings);
 
+    QString uiLanguage() const;
+    void setUiLanguage(const QString& languageCode);
+
 private:
     void setupUI();
 
@@ -70,6 +73,9 @@ public:
     EditorSettings settings() const;
     void setSettings(const EditorSettings& settings);
 
+    QString uiLanguage() const;
+    void setUiLanguage(const QString& languageCode);
+
 private slots:
     void updateControlStates();
     void updateFontSizes();
@@ -77,6 +83,7 @@ private slots:
 private:
     void setupUI();
 
+    QComboBox* d_uiLanguage;
     QFontComboBox* d_editorFontComboBox;
     QComboBox* d_editorFontSizeComboBox;
     QComboBox* d_colorScheme;

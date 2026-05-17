@@ -28,7 +28,7 @@ use typst::{
     diag::{EcoString, FileError, FileResult, PackageError},
     foundations::Bytes,
     syntax::{FileId, Source, VirtualPath, package::PackageSpec},
-    text::{Font, FontBook},
+    text::{Font, FontBook, Lang, TextElem},
     utils::LazyHash,
 };
 use typst_kit::fonts::{FontSlot, Fonts};
@@ -47,6 +47,8 @@ pub struct KatvanWorld<'a> {
     fonts: Vec<FontSlot>,
     source: Source,
     now: Option<OffsetDateTime>,
+    a11y_extras: bool,
+    default_lang: Option<Lang>,
 }
 
 impl<'a> KatvanWorld<'a> {
@@ -67,6 +69,8 @@ impl<'a> KatvanWorld<'a> {
             fonts: fonts.fonts,
             source,
             now: None,
+            a11y_extras: false,
+            default_lang: None,
         }
     }
 
@@ -93,16 +97,34 @@ impl<'a> KatvanWorld<'a> {
     }
 
     pub fn set_compiler_flags(&mut self, a11y_extras: bool) {
+        self.a11y_extras = a11y_extras;
+        self.rebuild_library();
+    }
+
+    pub fn set_default_text_lang(&mut self, lang: &str) {
+        self.default_lang = if lang.is_empty() {
+            None
+        } else {
+            lang.parse::<Lang>().ok()
+        };
+        self.rebuild_library();
+    }
+
+    fn rebuild_library(&mut self) {
         let mut features = vec![];
-        if a11y_extras {
+        if self.a11y_extras {
             features.push(Feature::A11yExtras);
         }
 
-        self.library = LazyHash::new(
-            Library::builder()
-                .with_features(features.into_iter().collect())
-                .build(),
-        );
+        let mut library = Library::builder()
+            .with_features(features.into_iter().collect())
+            .build();
+
+        if let Some(lang) = self.default_lang {
+            library.styles.set(TextElem::lang, lang);
+        }
+
+        self.library = LazyHash::new(library);
     }
 
     pub fn set_allowed_paths(&mut self, paths: Vec<String>) {

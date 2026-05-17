@@ -402,6 +402,12 @@ void Engine::applySettings(const TypstCompilerSettings& settings)
     d_ptr->engine.value()->set_allowed_paths(paths);
 }
 
+void Engine::setDefaultTextLang(const QString& lang)
+{
+    Q_ASSERT(d_ptr->engine.has_value());
+    d_ptr->engine.value()->set_default_text_lang(qstringToRust(lang));
+}
+
 void Engine::discardLookupCaches()
 {
     Q_ASSERT(d_ptr->engine.has_value());
